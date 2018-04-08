@@ -145,23 +145,23 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
     end = time.time()
     train_iters = (train_loader.train_size // args.batch_size // 10 + 1) * 10
-    for i, (input, target) in enumerate(train_loader.next_batch()):
+    for i, (inp, target) in enumerate(train_loader.next_batch()):
         # measure data loading time
         data_time.update(time.time() - end)
 
-        input = input.cuda(async=True)
+        inp = inp.cuda(async=True)
         target = target.cuda(async=True)
-        input_var = torch.autograd.Variable(input)
+        inp_var = torch.autograd.Variable(inp)
         target_var = torch.autograd.Variable(target)
         # compute output
-        output = model(input_var)
+        output = model(inp_var)
         loss = criterion(output, target_var)
 
         # measure accuracy and record loss
         prec1, prec3 = accuracy(output.data, target, topk=(1, 5))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top3.update(prec3[0], input.size(0))
+        losses.update(loss.data[0], inp.size(0))
+        top1.update(prec1[0], inp.size(0))
+        top3.update(prec3[0], inp.size(0))
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
@@ -193,21 +193,21 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     end = time.time()
-    for i, inp, target in enumerate(val_loader.next_batch()):
+    for i, (inp, target) in enumerate(val_loader.next_batch()):
         inp = inp.cuda(async=True)
         target = target.cuda(async=True)
-        input_var = torch.autograd.Variable(input, volatile=True)
+        inp_var = torch.autograd.Variable(inp, volatile=True)
         target_var = torch.autograd.Variable(target, volatile=True)
 
         # compute output
-        output = model(input_var)
+        output = model(inp_var)
         loss = criterion(output, target_var)
 
         # measure accuracy and record loss
         prec1, prec3 = accuracy(output.data, target, topk=(1, 3))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top3.update(prec3[0], input.size(0))
+        losses.update(loss.data[0], inp.size(0))
+        top1.update(prec1[0], inp.size(0))
+        top3.update(prec3[0], inp.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)

@@ -109,7 +109,7 @@ class Provider:
                 ))
             else:
                 p = Process(target=worker, args=(
-                    pid, batch_size, self.data_dir,
+                    pid, 1, self.data_dir,
                     self.test_anns, self.test_transform,
                     result_queue
                 ))    
