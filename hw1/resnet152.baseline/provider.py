@@ -52,7 +52,7 @@ def worker(pid, batch_size, data_dir, img_anns, transformer, result_queue):
             data[bid] = inp
             target[bid] = long(info[1])
             bid += 1
-        result_queue.put((data, target))
+        result_queue.put_nowait((data, target))
     return
 
 class Provider:
@@ -60,7 +60,7 @@ class Provider:
         f = open(path, 'rb')
         return pickle.load(f)
 
-    def __init__(self, phase='train', batch_size=256, workers=6, worker_buf=32):
+    def __init__(self, phase='train', batch_size=256, workers=6, worker_buf=32*256):
         self.phase = phase
         self.batch_size = batch_size
         self.workers = workers if phase == 'train' else 1

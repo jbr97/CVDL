@@ -98,7 +98,7 @@ def main():
     cudnn.benchmark = True
 
     # Data loading code
-    train_loader = Provider(phase = 'train', batch_size=args.batch_size)
+    train_loader = Provider(phase = 'train', batch_size=args.batch_size, workers=args.workers)
     val_loader = Provider(phase = 'test', batch_size=args.batch_size)
     # define loss function (criterion) and pptimizer
     criterion = nn.CrossEntropyLoss().cuda()
