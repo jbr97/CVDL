@@ -181,6 +181,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
                 'Prec@3 {top3.val:.3f} ({top3.avg:.3f})'.format(
                 epoch, i, train_iters, batch_time=batch_time,
                 data_time=data_time, loss=losses, top1=top1, top3=top3))
+	if i == train_iters:
+            break
 
 
 def validate(val_loader, model, criterion):
@@ -221,6 +223,8 @@ def validate(val_loader, model, criterion):
                 'Prec@3 {top3.val:.3f} ({top3.avg:.3f})'.format(
                 i, val_loader.test_size, batch_time=batch_time, loss=losses,
                 top1=top1, top3=top3))
+	if i == val_loader.test_size:
+            break
 
     print(' * Prec@1 {top1.avg:.3f} Prec@5 {top3.avg:.3f}'
         .format(top1=top1, top3=top3))
@@ -231,9 +235,8 @@ def validate(val_loader, model, criterion):
 def save_checkpoint(state, is_best, fileprefix='checkpoint'):
     filename = fileprefix + '.pth.tar'
     torch.save(state, filename)
-    os.symlink(filename, 'snapshot_last.pth.tar')
     if is_best:
-        shutil.copyfile(filename, 'snapshot_best.pth.tar')
+        shutil.copyfile(filename, 'snapshot/snapshot_best.pth.tar')
 
 
 class AverageMeter(object):
